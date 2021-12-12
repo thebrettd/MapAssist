@@ -210,10 +210,7 @@ namespace MapAssist.Types
                             }
                         }
                     }
-                }
-                if (IsPlayer() && _unitAny.pInventory != IntPtr.Zero)
-                {
-                    using (var processContext = GameManager.GetProcessContext())
+                    if (IsPlayer() && _unitAny.pInventory != IntPtr.Zero)
                     {
                         var expansionCharacter = processContext.Read<byte>(GameManager.ExpansionCheckOffset) == 1;
                         var userBaseOffset = 0x30;
