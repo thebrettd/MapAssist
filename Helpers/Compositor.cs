@@ -37,6 +37,7 @@ namespace MapAssist.Helpers
     {
         public const float RotateRadians = (float)(45 * Math.PI / 180f);
         private Bitmap gamemapDX;
+        private (uint, Area) gameMapCacheKey;
         private Rectangle _drawBounds;
         private GameState _gameState;
         private float scaleWidth = 1;
@@ -65,8 +66,19 @@ namespace MapAssist.Helpers
                     break;
             }
 
+            // We cache the game map rendering for the same area/seed
+            // if the area or seed changes we should bust that cache and re-render
+            var cacheKey = (_gameState.GameData.MapSeed, _gameState.GameData.Area);
+            if (gameMapCacheKey != cacheKey)
+            {
+                gamemapDX = null;
+            }
+            
             if (gamemapDX != null && gamemapDX.IsDisposed == false) return;
-
+            
+            // Update the cache key
+            gameMapCacheKey = cacheKey;
+            
             RenderTarget renderTarget = gfx.GetRenderTarget();
 
             var imageSize = new Size2((int)areaData.ViewInputRect.Width, (int)areaData.ViewInputRect.Height);
@@ -559,6 +571,9 @@ namespace MapAssist.Helpers
                 DrawText(gfx, anchor, "ERROR LOADING GAME MAP!", "Consolas", 20, Color.Orange);
                 anchor.Y += fontHeight + 5;
             }
+            
+            DrawText(gfx, anchor, $"FRAMES: {_gameState.Frames}", "Consolas", 20, Color.Blue);
+            anchor.Y += fontHeight + 5;
 
             DrawItemLog(gfx, anchor);
         }
