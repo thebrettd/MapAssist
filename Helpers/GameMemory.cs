@@ -32,26 +32,13 @@ namespace MapAssist.Helpers
 
         public static Dictionary<int, UnitAny> PlayerUnits = new Dictionary<int, UnitAny>();
 
-        public static GameData GetGameData()
+        public static GameData GetGameData(ProcessContext processContext, UnitAny playerUnit)
         {
             try
             {
-                if (!GameManager.IsGameInForeground)
-                {
-                    return null;
-                }
-
-                var processContext = GameManager.GetProcessContext();
-
-                if (processContext == null)
-                {
-                    return null;
-                }
-
                 using (processContext)
                 {
                     _currentProcessId = processContext.ProcessId;
-                    var playerUnit = GameManager.PlayerUnit;
 
                     if(!PlayerUnits.TryGetValue(_currentProcessId, out var _))
                     {
@@ -139,7 +126,6 @@ namespace MapAssist.Helpers
                             MapSeed = mapSeed,
                             Area = levelId,
                             Difficulty = gameDifficulty,
-                            MainWindowHandle = GameManager.MainWindowHandle,
                             PlayerName = playerUnit.Name,
                             Monsters = monsterList,
                             Items = itemList,
@@ -166,7 +152,6 @@ namespace MapAssist.Helpers
                 }
             }
 
-            GameManager.ResetPlayerUnit();
             return null;
         }
 

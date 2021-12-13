@@ -21,6 +21,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using MapAssist.Structs;
+using MapAssist.Types;
 
 namespace MapAssist.Helpers
 {
@@ -42,6 +43,7 @@ namespace MapAssist.Helpers
         private static IntPtr _MenuPanelOpenOffset;
         private static IntPtr _MenuDataOffset;
         private static IntPtr _RosterDataOffset;
+        private static GameState _LastGameState;
 
         private static WindowsExternal.WinEventDelegate _eventDelegate = null;
 
@@ -287,6 +289,26 @@ namespace MapAssist.Helpers
                     GameMemory.PlayerUnits[processId] = default;
                 }
             }
+        }
+
+        public static GameState GetGameState()
+        {
+            GameData gameData = null;
+            if (IsGameInForeground)
+            {
+                var context = GetProcessContext();
+                if (context != null)
+                {
+                    gameData = GameMemory.GetGameData(context, PlayerUnit);
+                    if (gameData == null)
+                    {
+                        ResetPlayerUnit();
+                    }
+                }
+            }
+
+            _LastGameState = new GameState(gameData, _LastGameState, MainWindowHandle);
+            return _LastGameState;
         }
         
         public static void Dispose()
