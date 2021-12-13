@@ -554,11 +554,11 @@ namespace MapAssist.Helpers
                     // Last game name / password
                     // Grab from `LastGameState` always since we don't show this in the current game.
                     var gameNameText = $"Last Game Name: {_gameState.LastGameState.GameName}";
-                    DrawText(gfx, anchor, gameNameText, "Consolas", 16, fontColor);
+                    DrawText(gfx, anchor, gameNameText, "Consolas", 22, fontColor);
                     anchor.Y += fontHeight + 5;
 
                     var gamePassText = $"Last Game Pass: {_gameState.LastGameState.GamePass}";
-                    DrawText(gfx, anchor, gamePassText, "Consolas", 16, fontColor);
+                    DrawText(gfx, anchor, gamePassText, "Consolas", 22, fontColor);
                     anchor.Y += fontHeight + 5;
                }
 
