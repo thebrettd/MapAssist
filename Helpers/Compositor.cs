@@ -528,7 +528,7 @@ namespace MapAssist.Helpers
         }
 
         public void DrawGameInfo(Graphics gfx, Point anchor,
-            DrawGraphicsEventArgs e, bool errorLoadingAreaData)
+            DrawGraphicsEventArgs e, GameState gameState)
         {
             if (_gameState.GameData.MenuPanelOpen >= 2)
             {
@@ -540,20 +540,38 @@ namespace MapAssist.Helpers
             // Setup
             var fontSize = MapAssistConfiguration.Loaded.ItemLog.LabelFontSize;
             var fontHeight = (fontSize + fontSize / 2f);
-
-            if (_gameState.GameData == null)
+            
+            if (gameState.GameData == null)
             {
+                // Game lobby safe zones are quite shifted
+                anchor.X += 100;
+                anchor.Y -= 100;
+                
                // Draw lobby text 
+               if (MapAssistConfiguration.Loaded.GameInfo.Enabled)
+               {
+                    var fontColor = Color.Gold;
+                    // Last game name / password
+                    // Grab from `LastGameState` always since we don't show this in the current game.
+                    var gameNameText = $"Last Game Name: {_gameState.LastGameState.GameName}";
+                    DrawText(gfx, anchor, gameNameText, "Consolas", 16, fontColor);
+                    anchor.Y += fontHeight + 5;
+
+                    var gamePassText = $"Last Game Pass: {_gameState.LastGameState.GamePass}";
+                    DrawText(gfx, anchor, gamePassText, "Consolas", 16, fontColor);
+                    anchor.Y += fontHeight + 5;
+               }
+
                return;
             } 
-            // Game IP
+            
             if (MapAssistConfiguration.Loaded.GameInfo.Enabled)
             {
                 var fontColor = _gameState.GameData.Session.GameIP == MapAssistConfiguration.Loaded.HuntingIP ? Color.Green : Color.Red;
-
-                var ipText = "Game IP: " + _gameState.GameData.Session.GameIP;
+                
+                // Game IP
+                var ipText = "Game IP: " + gameState.GameData.Session.GameIP;
                 DrawText(gfx, anchor, ipText, "Consolas", 14, fontColor);
-
                 anchor.Y += fontHeight + 5;
 
                 // Overlay FPS
@@ -561,20 +579,17 @@ namespace MapAssist.Helpers
                 {
                     var fpsText = "FPS: " + gfx.FPS.ToString() + "   " + "DeltaTime: " + e.DeltaTime.ToString();
                     DrawText(gfx, anchor, fpsText, "Consolas", 14, Color.FromArgb(0, 255, 0));
-
                     anchor.Y += fontHeight + 5;
                 }
             }
 
-            if (errorLoadingAreaData)
+            // Game map error
+            if (gameState.GameData != null && gameState.GameData.AreaData == null)
             {
                 DrawText(gfx, anchor, "ERROR LOADING GAME MAP!", "Consolas", 20, Color.Orange);
                 anchor.Y += fontHeight + 5;
             }
             
-            DrawText(gfx, anchor, $"FRAMES: {_gameState.Frames}", "Consolas", 20, Color.Blue);
-            anchor.Y += fontHeight + 5;
-
             DrawItemLog(gfx, anchor);
         }
 

@@ -62,8 +62,6 @@ namespace MapAssist
                 _gameState = GameManager.GetGameState();
                 if (_gameState == null) return;
 
-                _gameState.Frames += 1;
-               
                 UpdateLocation();
                 
                 var drawBounds = new Rectangle(0, 0, gfx.Width, gfx.Height * 0.8f);
@@ -102,11 +100,11 @@ namespace MapAssist
                         _compositor.DrawBuffs(gfx);
                     }
 
-                    _compositor.DrawGameInfo(gfx, new Point(PlayerIconWidth() + 50, PlayerIconWidth() + 50), e, errorLoadingAreaData);
+                    _compositor.DrawGameInfo(gfx, new Point(PlayerIconWidth() + 50, PlayerIconWidth() + 50), e, _gameState);
                 }
                 else
                 {
-                    _compositor.DrawGameInfo(gfx, new Point(PlayerIconWidth() + 50, PlayerIconWidth() + 50), e, _gameState.GameData?.AreaData == null);
+                    _compositor.DrawGameInfo(gfx, new Point(PlayerIconWidth() + 50, PlayerIconWidth() + 50), e, _gameState);
                 }
                 
             }

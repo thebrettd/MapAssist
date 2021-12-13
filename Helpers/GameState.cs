@@ -2,6 +2,7 @@
 using MapAssist.Settings;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MapAssist.Types
 {
@@ -14,14 +15,13 @@ namespace MapAssist.Types
     
     public class GameState : BaseGameState
     {
-        public static readonly NLog.Logger _log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger _log = NLog.LogManager.GetCurrentClassLogger();
 
         // Store the current state including current game data
         // and previous game state
         public IntPtr MainWindowHandle;
         public GameData GameData;
         private MapApi MapApi;
-        public long Frames;
         
         // A trimmed down version of this state
         public LastGameState LastGameState;
@@ -30,6 +30,9 @@ namespace MapAssist.Types
         {
             GameData = gameData;
             MainWindowHandle = mainWindowHandle;
+            GameName = gameData?.Session?.GameName;
+            GamePass = gameData?.Session?.GamePass;
+            PlayerName = gameData?.PlayerName;
             
             if (GameData != null)
             {
@@ -64,11 +67,6 @@ namespace MapAssist.Types
             if (lastGameState != null)
             {
                 LastGameState = lastGameState.ToLastGameState();
-                Frames = lastGameState.Frames;
-            }
-            else
-            {
-                Frames = 0;
             }
         }
         private LastGameState ToLastGameState()
@@ -96,7 +94,20 @@ namespace MapAssist.Types
     {
         public static LastGameState FromGameState(GameState gameState)
         {
-            return new LastGameState() {GameName = gameState.GameName, GamePass = gameState.GamePass};
+            // Grab the gameName/gamePass from the last game state
+            // if the very last game state does not have it, carry it over from
+            // it's previous state.
+            var gameName = gameState.GameName;
+            var gamePass = gameState.GamePass;
+            if (string.IsNullOrWhiteSpace(gameName))
+            {
+                gameName = gameState.LastGameState?.GameName;
+            }
+            if (string.IsNullOrWhiteSpace(gamePass))
+            {
+                gamePass = gameState.LastGameState?.GamePass;
+            }
+            return new LastGameState() {GameName = gameName, GamePass = gamePass};
         }
     }
 }

@@ -300,17 +300,24 @@ namespace MapAssist.Helpers
         public static GameState GetGameState()
         {
             GameData gameData = null;
-            if (IsGameInForeground)
+            try
             {
-                var context = GetProcessContext();
-                if (context != null)
+                if (IsGameInForeground)
                 {
-                    gameData = GameMemory.GetGameData(context, PlayerUnit);
-                    if (gameData == null)
+                    var context = GetProcessContext();
+                    if (context != null)
                     {
-                        ResetPlayerUnit();
+                        gameData = GameMemory.GetGameData(context, PlayerUnit);
+                        if (gameData == null)
+                        {
+                            ResetPlayerUnit();
+                        }
                     }
                 }
+            }
+            catch (Exception)
+            {
+                ResetPlayerUnit();
             }
 
             GameState lastGameState;
