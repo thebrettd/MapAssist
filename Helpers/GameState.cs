@@ -14,14 +14,14 @@ namespace MapAssist.Types
     
     public class GameState : BaseGameState
     {
-        private static readonly NLog.Logger _log = NLog.LogManager.GetCurrentClassLogger();
+        public static readonly NLog.Logger _log = NLog.LogManager.GetCurrentClassLogger();
 
         // Store the current state including current game data
         // and previous game state
         public IntPtr MainWindowHandle;
         public GameData GameData;
-        
         private MapApi MapApi;
+        public long Frames;
         
         // A trimmed down version of this state
         public LastGameState LastGameState;
@@ -36,11 +36,11 @@ namespace MapAssist.Types
                 MapApi = HasGameChanged(lastGameState) ? new MapApi(gameData.Difficulty, gameData.MapSeed) : lastGameState.MapApi;
 
                 var mapChanged = HasMapChanged(lastGameState);
-                _log.Info($"Map Changed: {mapChanged}"); 
                 if (HasMapChanged(lastGameState))
                 {
                     if (GameData.Area != Area.None)
                     {
+                        _log.Info($"Area changed: {GameData.Area}"); 
                         GameData.AreaData = MapApi.GetMapData(GameData.Area);
                         GameData.AreaData.CalcViewAreas(Compositor.RotateRadians);
 
@@ -64,6 +64,11 @@ namespace MapAssist.Types
             if (lastGameState != null)
             {
                 LastGameState = lastGameState.ToLastGameState();
+                Frames = lastGameState.Frames;
+            }
+            else
+            {
+                Frames = 0;
             }
         }
         private LastGameState ToLastGameState()

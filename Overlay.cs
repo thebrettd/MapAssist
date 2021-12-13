@@ -61,6 +61,8 @@ namespace MapAssist
             {
                 _gameState = GameManager.GetGameState();
                 if (_gameState == null) return;
+
+                _gameState.Frames += 1;
                
                 UpdateLocation();
                 

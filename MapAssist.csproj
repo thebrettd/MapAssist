@@ -110,6 +110,7 @@
     <Compile Include="Files\FileManager.cs" />
     <Compile Include="Helpers\AudioPlayer.cs" />
     <Compile Include="Helpers\GameManager.cs" />
+    <Compile Include="Helpers\GameState.cs" />
     <Compile Include="Helpers\LootFilter.cs" />
     <Compile Include="Helpers\ProcessContext.cs" />
     <Compile Include="Helpers\YamlConverters.cs" />
@@ -143,7 +144,6 @@
     <Compile Include="Structs\Skills.cs" />
     <Compile Include="Structs\UnitAny.cs" />
     <Compile Include="Structs\UnitHashTable.cs" />
-    <Compile Include="Types\GameState.cs" />
     <Compile Include="Types\Items.cs" />
     <Compile Include="Types\Roster.cs" />
     <Compile Include="Types\Session.cs" />
