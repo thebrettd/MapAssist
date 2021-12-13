@@ -113,8 +113,8 @@
     <Compile Include="Files\Font\ResourceFontFileStream.cs" />
     <Compile Include="Files\Font\ResourceFontLoader.cs" />
     <Compile Include="Helpers\AudioPlayer.cs" />
-    <Compile Include="Helpers\GameDataReader.cs" />
     <Compile Include="Helpers\GameManager.cs" />
+    <Compile Include="Helpers\GameState.cs" />
     <Compile Include="Helpers\LootFilter.cs" />
     <Compile Include="Helpers\ProcessContext.cs" />
     <Compile Include="Helpers\YamlConverters.cs" />

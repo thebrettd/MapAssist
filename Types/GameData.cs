@@ -30,7 +30,6 @@ namespace MapAssist.Types
         public uint MapSeed;
         public Difficulty Difficulty;
         public Area Area;
-        public IntPtr MainWindowHandle;
         public string PlayerName;
         public HashSet<UnitAny> Monsters;
         public HashSet<UnitAny> Items;
@@ -41,25 +40,14 @@ namespace MapAssist.Types
         public UnitAny PlayerUnit;
         public byte MenuPanelOpen;
         public MenuData MenuOpen;
+        public AreaData AreaData;
+        public List<PointOfInterest> PointOfInterests;
 
-        public bool HasGameChanged(GameData other)
+        public bool HasChanged(GameData other)
         {
             if (other == null) return true;
             if (MapSeed != other.MapSeed) return true;
-            if (Difficulty != other.Difficulty) return true;
-            if (PlayerName != other.PlayerName) return true;
-            return false;
-        }
-
-        public bool HasMapChanged(GameData other)
-        {
-            return HasGameChanged(other) || Area != other.Area;
-        }
-
-        public override string ToString()
-        {
-            return
-                $"{nameof(PlayerPosition)}: {PlayerPosition}, {nameof(MapSeed)}: {MapSeed}, {nameof(Difficulty)}: {Difficulty}, {nameof(Area)}: {Area}, {nameof(MenuOpen.Map)}: {MenuOpen.Map}";
+            return Difficulty != other.Difficulty;
         }
     }
 }
