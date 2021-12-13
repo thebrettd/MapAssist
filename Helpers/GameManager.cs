@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Text;
 using MapAssist.Structs;
 using MapAssist.Types;
+using System.Collections.Generic;
 
 namespace MapAssist.Helpers
 {
@@ -43,12 +44,13 @@ namespace MapAssist.Helpers
         private static IntPtr _MenuPanelOpenOffset;
         private static IntPtr _MenuDataOffset;
         private static IntPtr _RosterDataOffset;
-        private static GameState _LastGameState;
+        private static Dictionary<int, GameState> _LastGameState = new Dictionary<int, GameState>();
 
         private static WindowsExternal.WinEventDelegate _eventDelegate = null;
 
         private static bool _playerNotFoundErrorThrown = false;
 
+        #region WindowManagement
         public static void MonitorForegroundWindow()
         {
             _eventDelegate = new WindowsExternal.WinEventDelegate(WinEventProc);
@@ -134,7 +136,9 @@ namespace MapAssist.Helpers
 
         public static IntPtr MainWindowHandle { get => _lastGameHwnd; }
         public static bool IsGameInForeground { get => _lastGameProcessId == _foregroundProcessId; }
-
+        
+        #endregion
+        
         public static Types.UnitAny PlayerUnit
         {
             get
@@ -190,6 +194,7 @@ namespace MapAssist.Helpers
             }
         }
 
+        #region Offsets
         public static IntPtr ExpansionCheckOffset
         {
             get
@@ -277,6 +282,7 @@ namespace MapAssist.Helpers
             }
         }
 
+        #endregion
         public static void ResetPlayerUnit()
         {
             _PlayerUnit = default;
@@ -307,8 +313,10 @@ namespace MapAssist.Helpers
                 }
             }
 
-            _LastGameState = new GameState(gameData, _LastGameState, MainWindowHandle);
-            return _LastGameState;
+            GameState lastGameState;
+            _LastGameState.TryGetValue(_lastGameProcessId, out lastGameState);
+            _LastGameState[_lastGameProcessId] = new GameState(gameData, lastGameState, MainWindowHandle);
+            return _LastGameState[_lastGameProcessId];
         }
         
         public static void Dispose()
