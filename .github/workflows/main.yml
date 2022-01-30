@@ -3,6 +3,8 @@ name: Rebase after merge
 on: 
   pull_request:
     types: [closed]
+    branches:
+      - main
 
 jobs:
   rebase:
